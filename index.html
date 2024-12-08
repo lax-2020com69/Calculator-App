@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        /* Calculator Container */
+        .calculator {
+            background-color: #2e3b4e;
+            border-radius: 20px;
+            padding: 30px;
+            width: 980px;  /* Adjusted width for a more comfortable size */
+            max-width: 500px;  /* Ensures the calculator doesn't stretch too much on larger screens */
+            box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Display Screen */
+        .display {
+            width: 100%;
+            height: 60px;
+            font-size: 32px;
+            text-align: right;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f4f4f9;
+            color: #333;
+            box-shadow: inset 0px 2px 8px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+        }
+
+        /* Buttons Layout */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* Button Styling */
+        .btn {
+            padding: 20px;
+            font-size: 20px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            color: #333;
+        }
+
+        /* Button Hover Effects */
+        .btn:hover {
+            background-color: #d6d6d6;
+            transform: translateY(-3px);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            background-color: #c7c7c7;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Equals Button */
+        .equal {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            grid-column: span 5;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .equal:hover {
+            background-color: #45a049;
+        }
+
+        .equal:active {
+            background-color: #3e8e41;
+        }
+
+        /* Delete Button */
+        .delete {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .delete:hover {
+            background-color: #f5c6cb;
+        }
+
+        .delete:active {
+            background-color: #f1a3a6;
+        }
+
+        /* Clear Button */
+        .clear {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+
+        .clear:hover {
+            background-color: #fbc02d;
+        }
+
+        .clear:active {
+            background-color: #f9c02f;
+        }
+
+        /* Function Button Styles */
+        .func {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .func:hover {
+            background-color: #c9c9c9;
+        }
+
+        .func:active {
+            background-color: #b3b3b3;
+        }
+
+        /* Memory Button Style */
+        .memory {
+            background-color: #82c91e;
+            color: white;
+        }
+
+        .memory:hover {
+            background-color: #70b818;
+        }
+
+        .memory:active {
+            background-color: #5f9e15;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled class="display" />
+        <div class="buttons">
+            <button class="btn func" onclick="appendToDisplay('1')">1</button>
+            <button class="btn func" onclick="appendToDisplay('2')">2</button>
+            <button class="btn func" onclick="appendToDisplay('3')">3</button>
+            <button class="btn func" onclick="appendToDisplay('+')">+</button>
+            <button class="btn func" onclick="appendToDisplay('%')">%</button>
+
+            <button class="btn func" onclick="appendToDisplay('4')">4</button>
+            <button class="btn func" onclick="appendToDisplay('5')">5</button>
+            <button class="btn func" onclick="appendToDisplay('6')">6</button>
+            <button class="btn func" onclick="appendToDisplay('-')">-</button>
+            <button class="btn func" onclick="square()">x²</button>
+
+            <button class="btn func" onclick="appendToDisplay('7')">7</button>
+            <button class="btn func" onclick="appendToDisplay('8')">8</button>
+            <button class="btn func" onclick="appendToDisplay('9')">9</button>
+            <button class="btn func" onclick="appendToDisplay('*')">*</button>
+            <button class="btn func" onclick="squareRoot()">√</button>
+
+            <button class="btn func" onclick="appendToDisplay('0')">0</button>
+            <button class="btn func" onclick="appendToDisplay('.')">.</button>
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn func" onclick="appendToDisplay('/')">/</button>
+            <button class="btn memory" onclick="memoryRecall()">Ans</button>
+
+            <button class="btn delete" onclick="deleteLast()">⌫</button>
+            <button class="btn equal" onclick="calculateResult()">=</button>
+
+            <!-- Additional Trigonometric Functions -->
+            <button class="btn func" onclick="sin()">sin</button>
+            <button class="btn func" onclick="cos()">cos</button>
+            <button class="btn func" onclick="tan()">tan</button>
+        </div>
+    </div>
+
+    <script>
+        let memory = null;  // Variable to store the last result (Ans)
+
+        // Function to append value to the display
+        function appendToDisplay(value) {
+            const display = document.getElementById('display');
+            display.value += value;
+        }
+
+        // Function to clear the display
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        // Function to delete the last character from the display
+        function deleteLast() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
+        }
+
+        // Function to calculate the result
+        function calculateResult() {
+            const display = document.getElementById('display');
+            try {
+                let result = eval(display.value);  // Evaluate the expression
+                memory = result;  // Store the result in memory
+                display.value = result;
+            } catch (error) {
+                display.value = 'Error';  // Handle errors like invalid expression
+            }
+        }
+
+        // Function for square
+        function square() {
+            const display = document.getElementById('display');
+            display.value = Math.pow(eval(display.value), 2);
+        }
+
+        // Function for square root
+        function squareRoot() {
+            const display = document.getElementById('display');
+            display.value = Math.sqrt(eval(display.value));
+        }
+
+        // Function for modulus
+        function modulus() {
+            appendToDisplay('%');
+        }
+
+        // Function for sine
+        function sin() {
+            const display = document.getElementById('display');
+            display.value = Math.sin(degreesToRadians(eval(display.value)));
+        }
+
+        // Function for cosine
+        function cos() {
+            const display = document.getElementById('display');
+            display.value = Math.cos(degreesToRadians(eval(display.value)));
+        }
+
+        // Function for tangent
+        function tan() {
+            const display = document.getElementById('display');
+            display.value = Math.tan(degreesToRadians(eval(display.value)));
+        }
+
+        // Convert degrees to radians for trigonometric functions
+        function degreesToRadians(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        // Function to recall the last result (Ans)
+        function memoryRecall() {
+            if (memory !== null) {
+                document.getElementById('display').value = memory;
+            }
+        }
+    </script>
+</body>
+</html>
