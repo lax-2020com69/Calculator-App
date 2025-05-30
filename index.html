@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Advanced Calculator</title>
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Body Styling */
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+		flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        color: #f0f0f5;
+    }
+
+    /* Calculator Container */
+    .calculator {
+        background-color: #2e3b4e;
+        border-radius: 20px;
+        padding: 30px 25px 40px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Display Screen */
+    .display {
+        width: 100%;
+        height: 60px;
+        font-size: 2rem;
+        text-align: right;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: none;
+        border-radius: 12px;
+        background-color: #f4f4f9;
+        color: #333;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.25);
+        box-sizing: border-box;
+        user-select: text;
+        font-weight: 600;
+    }
+
+    /* Buttons Layout */
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        width: 100%;
+    }
+
+    /* Button Styling */
+    .btn {
+        padding: 18px 0;
+        font-size: 1.25rem;
+        background-color: #f1f1f1;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.1s ease,
+            box-shadow 0.2s ease;
+        color: #333;
+        user-select: none;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Button Hover Effects */
+    .btn:hover {
+        background-color: #d6d6d6;
+        transform: translateY(-3px);
+        box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+        background-color: #c7c7c7;
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    /* Equals Button */
+    .equal {
+        background-color: #4caf50;
+        color: white;
+        font-weight: 700;
+        grid-column: span 5;
+        border-radius: 12px;
+        box-shadow: 0 7px 15px rgba(46, 139, 87, 0.5);
+    }
+
+    .equal:hover {
+        background-color: #45a049;
+    }
+
+    .equal:active {
+        background-color: #3e8e41;
+    }
+
+    /* Delete Button */
+    .delete {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .delete:hover {
+        background-color: #f5c6cb;
+    }
+
+    .delete:active {
+        background-color: #f1a3a6;
+    }
+
+    /* Clear Button */
+    .clear {
+        background-color: #ffeb3b;
+        color: #333;
+    }
+
+    .clear:hover {
+        background-color: #fbc02d;
+    }
+
+    .clear:active {
+        background-color: #f9c02f;
+    }
+
+    /* Function Button Styles */
+    .func {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    .func:hover {
+        background-color: #c9c9c9;
+    }
+
+    .func:active {
+        background-color: #b3b3b3;
+    }
+
+    /* Memory Button Style */
+    .memory {
+        background-color: #82c91e;
+        color: white;
+    }
+
+    .memory:hover {
+        background-color: #70b818;
+    }
+
+    .memory:active {
+        background-color: #5f9e15;
+    }
+
+    /* Keyboard Shortcuts Container */
+    .legend {
+        margin-top: 30px;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 15px 20px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 480px;
+        color: #e0e0e0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        user-select: none;
+    }
+
+    .legend strong {
+        color: #ffd700;
+    }
+
+    .legend br {
+        margin-bottom: 6px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+        .display {
+            font-size: 1.5rem;
+            height: 50px;
+            padding: 15px;
+        }
+        .btn {
+            font-size: 1rem;
+            padding: 14px 0;
+        }
+        .equal {
+            font-size: 1.1rem;
+        }
+        .legend {
+            font-size: 0.8rem;
+            padding: 12px 15px;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .buttons {
+            gap: 8px;
+        }
+        .btn {
+            padding: 12px 0;
+            font-size: 0.9rem;
+        }
+        .equal {
+            font-size: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled class="display" />
+        <div class="buttons">
+            <button class="btn func" onclick="appendToDisplay('1')">1</button>
+            <button class="btn func" onclick="appendToDisplay('2')">2</button>
+            <button class="btn func" onclick="appendToDisplay('3')">3</button>
+            <button class="btn func" onclick="appendToDisplay('+')">+</button>
+            <button class="btn func" onclick="appendToDisplay('%')">%</button>
+
+            <button class="btn func" onclick="appendToDisplay('4')">4</button>
+            <button class="btn func" onclick="appendToDisplay('5')">5</button>
+            <button class="btn func" onclick="appendToDisplay('6')">6</button>
+            <button class="btn func" onclick="appendToDisplay('-')">-</button>
+            <button class="btn func" onclick="square()">x²</button>
+
+            <button class="btn func" onclick="appendToDisplay('7')">7</button>
+            <button class="btn func" onclick="appendToDisplay('8')">8</button>
+            <button class="btn func" onclick="appendToDisplay('9')">9</button>
+            <button class="btn func" onclick="appendToDisplay('*')">*</button>
+            <button class="btn func" onclick="squareRoot()">√</button>
+
+            <button class="btn func" onclick="appendToDisplay('0')">0</button>
+            <button class="btn func" onclick="appendToDisplay('.')">.</button>
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn func" onclick="appendToDisplay('/')">/</button>
+            <button class="btn memory" onclick="memoryRecall()">Ans</button>
+
+            <button class="btn delete" onclick="deleteLast()">⌫</button>
+            <button class="btn equal" onclick="calculateResult()">=</button>
+
+            <!-- Additional Trigonometric Functions -->
+            <button class="btn func" onclick="sin()">sin</button>
+            <button class="btn func" onclick="cos()">cos</button>
+            <button class="btn func" onclick="tan()">tan</button>
+        </div>
+    </div>
+
+    <div class="legend" aria-label="Keyboard shortcuts for calculator">
+        <strong>Keyboard Shortcuts:</strong><br />
+        Numbers, <code>+ - * / ( ) % .</code><br />
+        <code>Enter</code> = Calculate | <code>Backspace</code> = Delete | <code>C</code> = Clear<br />
+        <code>A</code> = Ans | <code>S</code> = sin | <code>O</code> = cos | <code>T</code> = tan<br />
+        <code>^</code> = Square | <code>R</code> = √ (Square Root)
+    </div>
+
+<script>
+    let memory = null; // Variable to store the last result (Ans)
+
+    function appendToDisplay(value) {
+        const display = document.getElementById('display');
+        display.value += value;
+    }
+
+    function clearDisplay() {
+        document.getElementById('display').value = '';
+    }
+
+    function deleteLast() {
+        const display = document.getElementById('display');
+        display.value = display.value.slice(0, -1);
+    }
+
+    function calculateResult() {
+        const display = document.getElementById('display');
+        try {
+            let expression = display.value.replace(/\^/g, '**');
+            let result = eval(expression);
+            memory = result;
+            display.value = result;
+        } catch (error) {
+            display.value = 'Error';
+        }
+    }
+
+    function square() {
+        const display = document.getElementById('display');
+        try {
+            let val = eval(display.value);
+            display.value = Math.pow(val, 2);
+        } catch {
+            display.value = 'Error';
+        }
+    }
+
+    function squareRoot() {
+        const display = document.getElementById('display');
+        try {
+            let val = eval(display.value);
+            display.value = Math.sqrt(val);
+        } catch {
+            display.value = 'Error';
+        }
+    }
+
+    function sin() {
+        const display = document.getElementById('display');
+        try {
+            let val = eval(display.value);
+            display.value = Math.sin(degreesToRadians(val));
+        } catch {
+            display.value = 'Error';
+        }
+    }
+
+    function cos() {
+        const display = document.getElementById('display');
+        try {
+            let val = eval(display.value);
+            display.value = Math.cos(degreesToRadians(val));
+        } catch {
+            display.value = 'Error';
+        }
+    }
+
+    function tan() {
+        const display = document.getElementById('display');
+        try {
+            let val = eval(display.value);
+            display.value = Math.tan(degreesToRadians(val));
+        } catch {
+            display.value = 'Error';
+        }
+    }
+
+    function degreesToRadians(degrees) {
+        return degrees * (Math.PI / 180);
+    }
+
+    function memoryRecall() {
+        if (memory !== null) {
+            document.getElementById('display').value = memory;
+        }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', function (event) {
+        const key = event.key;
+        const allowedKeys = ['+', '-', '*', '/', '.', '%', '(', ')'];
+        const display = document.getElementById('display');
+
+        if (!isNaN(key) || allowedKeys.includes(key)) {
+            appendToDisplay(key);
+        } else if (key === 'Enter') {
+            event.preventDefault();
+            calculateResult();
+        } else if (key === 'Backspace') {
+            deleteLast();
+        } else if (key.toLowerCase() === 'c') {
+            clearDisplay();
+        } else if (key.toLowerCase() === 'a') {
+            memoryRecall();
+        } else if (key.toLowerCase() === 's') {
+            sin();
+        } else if (key.toLowerCase() === 'o') {
+            cos();
+        } else if (key.toLowerCase() === 't') {
+            tan();
+        } else if (key === '^') {
+            square();
+        } else if (key.toLowerCase() === 'r') {
+            squareRoot();
+        }
+    });
+</script>
+</body>
+</html>
