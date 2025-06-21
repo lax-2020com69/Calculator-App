@@ -381,6 +381,9 @@
             cos();
         } else if (key.toLowerCase() === 't') {
             tan();
+        } else if (key === '=') {
+            event.preventDefault();
+            calculateResult();
         } else if (key === '^') {
             square();
         } else if (key.toLowerCase() === 'r') {
